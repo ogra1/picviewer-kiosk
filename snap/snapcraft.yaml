@@ -1,0 +1,70 @@
+name: picviewer-kiosk
+adopt-info: imv
+summary: A kiosk image viewer intended for use with mir-kiosk
+description: |
+  Image viewer for mir-kiosk based on imv
+
+  Put Pictures into /var/snap/picviewer-kiosk/common/,
+  restart the snap with "snap restart picviewer-kiosk" and the
+  Pictures will run as a slideshow at a 10 second rotation 
+  frequency.
+
+  Support for over 30 different image file formats including
+    - Photoshop PSD files
+    - Animated GIFS
+    - Various RAW formats
+  Configurable key bindings and behaviour
+
+  To find out more about imv go to
+  https://github.com/eXeC64/imv
+
+  To find out more about the snap package of imv go to
+  https://github.com/ogra1/picviewer-kiosk
+
+  The icon is from https://www.flaticon.com/authors/picol
+
+base: core18
+grade: stable
+confinement: strict
+
+apps:
+  picviewer-kiosk:
+    command: snap/command-chain/desktop-launch $SNAP/usr/bin/imv -f -t 10 $SNAP_COMMON/
+    daemon: simple
+    extensions: [ gnome-3-28 ]
+    plugs:
+      - hardware-observe
+      - network-bind
+      - opengl
+      - wayland
+
+parts:
+  imv:
+    source: https://github.com/eXeC64/imv.git
+    source-depth: 1
+    source-tag: v4.1.0
+    plugin: make
+    override-build: |
+      # set version
+      VER="$(git tag|tail -1)"
+      echo "setting version to $VER"
+      snapcraftctl set-version $VER
+      # force wayland-only build
+      sed -i 's/^WINDOWS=all/WINDOWS=wayland/g' config.mk
+      snapcraftctl build
+    build-packages:
+      - asciidoc-base
+      - libfreeimage-dev
+      - libglu1-mesa-dev
+      - librsvg2-dev
+      - libxkbcommon-x11-dev
+      - libwayland-dev
+    stage-packages:
+      - libfreeimage3
+      - libgomp1
+      - libilmbase12
+      - libjxr0
+      - libopenexr22
+      - libopenjp2-7
+      - libraw16
+      - libwebpmux3
