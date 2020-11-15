@@ -21,8 +21,6 @@ description: |
   To find out more about the snap package of imv go to
   https://github.com/ogra1/picviewer-kiosk
 
-  The icon is from https://www.flaticon.com/authors/picol
-
 base: core18
 grade: stable
 confinement: strict
