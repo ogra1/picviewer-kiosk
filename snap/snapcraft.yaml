@@ -56,6 +56,7 @@ parts:
       - asciidoc
       - libfreeimage-dev
       - libglu1-mesa-dev
+      - libcmocka-dev
       - librsvg2-dev
       - libxkbcommon-x11-dev
       - libwayland-dev
