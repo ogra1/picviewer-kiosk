@@ -29,6 +29,7 @@ apps:
   picviewer-kiosk:
     command: snap/command-chain/desktop-launch $SNAP/usr/bin/imv -b checks -f -t 10 $SNAP_COMMON/
     daemon: simple
+    restart-condition: always
     extensions: [ gnome-3-28 ]
     plugs:
       - hardware-observe
