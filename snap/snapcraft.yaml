@@ -53,12 +53,13 @@ parts:
       sed -i 's/^WINDOWS=all/WINDOWS=wayland/g' config.mk
       snapcraftctl build
     build-packages:
-      - asciidoc-base
+      - asciidoc
       - libfreeimage-dev
       - libglu1-mesa-dev
       - librsvg2-dev
       - libxkbcommon-x11-dev
       - libwayland-dev
+      - xsltproc
     stage-packages:
       - libfreeimage3
       - libgomp1
