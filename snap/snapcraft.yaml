@@ -43,8 +43,6 @@ parts:
     source-depth: 1
     source-tag: v4.1.0
     plugin: make
-    build-environment:
-      - SNAPCRAFT_PARALLEL_BUILD_COUNT: "1"
     override-build: |
       # set version
       VER="$(git tag|tail -1)"
@@ -52,7 +50,9 @@ parts:
       snapcraftctl set-version $VER
       # force wayland-only build
       sed -i 's/^WINDOWS=all/WINDOWS=wayland/g' config.mk
-      snapcraftctl build
+      # force single threaded build to make xsltproc not fail
+      make -j1
+      make install DESTDIR=$SNAPCRAFT_PART_INSTALL
     build-packages:
       - asciidoc
       - libfreeimage-dev
