@@ -27,6 +27,11 @@ base: core18
 grade: stable
 confinement: strict
 
+architectures:
+  - build-on: amd64
+  - build-on: armhf
+  - build-on: arm64
+
 apps:
   imv:
     command: snap/command-chain/desktop-launch $SNAP/usr/bin/imv -f -t 10 -r $SNAP_DATA/
