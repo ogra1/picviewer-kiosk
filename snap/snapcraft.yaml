@@ -109,10 +109,12 @@ parts:
       fi
 
       npm install
-      cp -av index.js $SNAPCRAFT_PART_INSTALL/
-      cp -av node_modules $SNAPCRAFT_PART_INSTALL/
-      cp -av views $SNAPCRAFT_PART_INSTALL/
-      cp -av assets $SNAPCRAFT_PART_INSTALL/
+
+      # install everything to $SNAPCRAFT_PART_INSTALL
+      for item in index.js node_modules views assets; do
+        cp -av $item $SNAPCRAFT_PART_INSTALL/
+      done
+      # also install node and npm
       cp -av $SNAPCRAFT_PART_SRC/../npm/bin $SNAPCRAFT_PART_INSTALL/
       cp -av $SNAPCRAFT_PART_SRC/../npm/lib/node_modules/* $SNAPCRAFT_PART_INSTALL/node_modules/
   watcher:
