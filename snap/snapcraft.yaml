@@ -43,6 +43,8 @@ parts:
     source-depth: 1
     source-tag: v4.1.0
     plugin: make
+    build-environment:
+      - SNAPCRAFT_PARALLEL_BUILD_COUNT: "1"
     override-build: |
       # set version
       VER="$(git tag|tail -1)"
