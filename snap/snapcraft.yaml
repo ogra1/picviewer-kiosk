@@ -36,7 +36,7 @@ architectures:
 
 apps:
   imv:
-    command: snap/command-chain/desktop-launch $SNAP/usr/bin/imv -f -t 10 -r $SNAP_DATA/
+    command: snap/command-chain/desktop-launch $SNAP/usr/bin/imv -f -t 10 $SNAP_DATA/
     daemon: simple
     restart-condition: always
     extensions: [ gnome-3-28 ]
