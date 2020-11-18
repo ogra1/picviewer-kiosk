@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+DEFAULT_DURATION=10
+
+duration="$(snapctl get duration)"
+
+if ! expr "$duration" : '^[0-9]*$' > /dev/null; then
+    echo "\"$duration\" is not a valid duration, reveting to $DEFAULT_DURATION seconds" >&2
+    snapctl set duration="$DEFAULT_DURATION"
+    snapctl restart "$SNAP_NAME".imv
+fi

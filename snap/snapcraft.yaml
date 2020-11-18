@@ -9,6 +9,10 @@ description: |
   picture files to the directory, a slideshow will automatically
   start on the Image Viewer screen.
 
+  Pictures will run as a slideshow. The time per picture can be
+  changed via "snap set picviewer-kiosk duration=30", the default
+  is 10 seconds per image.
+
   Imv has support for over 30 different image file formats including
     - Photoshop PSD files
     - Animated GIFS
@@ -37,7 +41,7 @@ architectures:
 
 apps:
   imv:
-    command: snap/command-chain/desktop-launch $SNAP/usr/bin/imv -f -t 10 -r $SNAP_DATA/
+    command: snap/command-chain/desktop-launch $SNAP/bin/imv.wrapper
     daemon: simple
     restart-condition: always
     extensions: [ gnome-3-28 ]
@@ -123,3 +127,8 @@ parts:
     source: watcher
     stage-packages:
       - inotify-tools
+  wrappers:
+    source: wrappers/
+    plugin: dump
+    organize:
+      imv.wrapper: bin/imv.wrapper
