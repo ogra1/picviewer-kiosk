@@ -6,6 +6,5 @@ duration="$(snapctl get duration)"
 
 if ! expr "$duration" : '^[0-9]*$' > /dev/null; then
     echo "\"$duration\" is not a valid duration, reveting to $DEFAULT_DURATION seconds" >&2
-    duration="$DEFAULT_DURATION"
-    snapctl set duration="$duration"
+    snapctl set duration="$DEFAULT_DURATION"
 fi
