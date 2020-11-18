@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+DURATION="$(snapctl get duration)"
+exec "$SNAP/usr/bin/imv" -f -t "$DURATION" "$SNAP_COMMON/"

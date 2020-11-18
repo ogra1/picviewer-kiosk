@@ -5,9 +5,11 @@ description: |
   Image viewer for mir-kiosk based on imv
 
   Put Pictures into /var/snap/picviewer-kiosk/common/,
-  restart the snap with "snap restart picviewer-kiosk" and the
-  Pictures will run as a slideshow at a 10 second rotation 
-  frequency.
+  restart the snap with "snap restart picviewer-kiosk".
+
+  Pictures will run as a slideshow. The time per picture can be
+  changed via "snap set picviewer-kiosk duration=30", the default
+  is 10 seconds per image.
 
   Support for over 30 different image file formats including
     - Photoshop PSD files
@@ -27,7 +29,7 @@ confinement: strict
 
 apps:
   picviewer-kiosk:
-    command: snap/command-chain/desktop-launch $SNAP/usr/bin/imv -b checks -f -t 10 $SNAP_COMMON/
+    command: snap/command-chain/desktop-launch $SNAP/bin/imv.wrapper
     daemon: simple
     restart-condition: always
     extensions: [ gnome-3-28 ]
@@ -69,3 +71,11 @@ parts:
       - libopenjp2-7
       - libraw16
       - libwebpmux3
+    organize:
+      imv.wrapper: bin/imv.wrapper
+
+  wrappers:
+    source: wrappers/
+    plugin: dump
+    organize:
+      imv.wrapper: bin/imv.wrapper
