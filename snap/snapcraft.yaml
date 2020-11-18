@@ -94,8 +94,6 @@ parts:
       - libopenjp2-7
       - libraw16
       - libwebpmux3
-    organize:
-      imv.wrapper: bin/imv.wrapper
   filebrowser:
     source: https://github.com/serverwentdown/file-manager.git
     source-depth: 1
