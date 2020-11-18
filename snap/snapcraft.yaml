@@ -4,21 +4,25 @@ summary: A kiosk image viewer intended for use with mir-kiosk
 description: |
   Image viewer for mir-kiosk based on imv
 
-  Put Pictures into /var/snap/picviewer-kiosk/common/,
-  restart the snap with "snap restart picviewer-kiosk".
+  To manage pictures shown by the Image Viewer, open
+  http://<IP of your kiosk device>:8080/ and upload some
+  picture files to the directory, a slideshow will automatically
+  start on the Image Viewer screen.
 
   Pictures will run as a slideshow. The time per picture can be
   changed via "snap set picviewer-kiosk duration=30", the default
   is 10 seconds per image.
 
-  Support for over 30 different image file formats including
+  Imv has support for over 30 different image file formats including
     - Photoshop PSD files
     - Animated GIFS
     - Various RAW formats
-  Configurable key bindings and behaviour
 
   To find out more about imv go to
   https://github.com/eXeC64/imv
+
+  To find out more about the FileManager tool used, go to
+  https://github.com/serverwentdown/file-manager
 
   To find out more about the snap package of imv go to
   https://github.com/ogra1/picviewer-kiosk
@@ -26,9 +30,17 @@ description: |
 base: core18
 grade: stable
 confinement: strict
+license: MIT
+
+architectures:
+  - build-on: amd64
+  - build-on: armhf
+  - build-on: arm64
+  - build-on: s390x
+  - build-on: ppc64el
 
 apps:
-  picviewer-kiosk:
+  imv:
     command: snap/command-chain/desktop-launch $SNAP/bin/imv.wrapper
     daemon: simple
     restart-condition: always
@@ -38,6 +50,15 @@ apps:
       - network-bind
       - opengl
       - wayland
+  file-browser:
+    command: bin/node $SNAP/index.js
+    daemon: simple
+    plugs:
+      - network
+      - network-bind
+  watcher:
+    command: watcher.sh
+    daemon: simple
 
 parts:
   imv:
@@ -52,7 +73,9 @@ parts:
       snapcraftctl set-version $VER
       # force wayland-only build
       sed -i 's/^WINDOWS=all/WINDOWS=wayland/g' config.mk
-      snapcraftctl build
+      # force single threaded build to make xsltproc not fail
+      make -j1
+      make install DESTDIR=$SNAPCRAFT_PART_INSTALL
     build-packages:
       - asciidoc
       - libfreeimage-dev
@@ -73,7 +96,39 @@ parts:
       - libwebpmux3
     organize:
       imv.wrapper: bin/imv.wrapper
+  filebrowser:
+    source: https://github.com/serverwentdown/file-manager.git
+    source-depth: 1
+    plugin: nodejs
+    nodejs-version: 10.21.0
+    nodejs-package-manager: npm
+    build-environment:
+      - PATH: "$PATH:$SNAPCRAFT_PART_SRC/../npm/bin"
+      - PATH: "$PATH:$SNAPCRAFT_PART_BUILD/node_modules/.bin"
+      - NPM_CONFIG_UNSAFE_PERM: "true"
+    override-build: |
+      # workaround for build.snapcraft.io builds
+      # https://bugs.launchpad.net/bugs/1886861
+      if [ -n "$http_proxy" ]; then
+        export ELECTRON_GET_USE_PROXY=1
+        export GLOBAL_AGENT_HTTP_PROXY="${http_proxy}"
+        export GLOBAL_AGENT_HTTPS_PROXY="${http_proxy}"
+      fi
 
+      npm install
+
+      # install everything to $SNAPCRAFT_PART_INSTALL
+      for item in index.js node_modules views assets; do
+        cp -av $item $SNAPCRAFT_PART_INSTALL/
+      done
+      # also install node and npm
+      cp -av $SNAPCRAFT_PART_SRC/../npm/bin $SNAPCRAFT_PART_INSTALL/
+      cp -av $SNAPCRAFT_PART_SRC/../npm/lib/node_modules/* $SNAPCRAFT_PART_INSTALL/node_modules/
+  watcher:
+    plugin: dump
+    source: watcher
+    stage-packages:
+      - inotify-tools
   wrappers:
     source: wrappers/
     plugin: dump
