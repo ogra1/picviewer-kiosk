@@ -2,10 +2,15 @@
 
 DEFAULT_DURATION=10
 
+# set default for filemanager if it is empty
+[ -n "$(snapctl get filemanager)" ] || snapctl set filemanager=true
+
 duration="$(snapctl get duration)"
 
 if ! expr "$duration" : '^[0-9]*$' > /dev/null; then
     echo "\"$duration\" is not a valid duration, reveting to $DEFAULT_DURATION seconds" >&2
     snapctl set duration="$DEFAULT_DURATION"
 fi
+
 snapctl restart "$SNAP_NAME".imv
+snapctl restart "$SNAP_NAME".file-browser

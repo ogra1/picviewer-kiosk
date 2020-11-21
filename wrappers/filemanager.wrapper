@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+# only run filemanager if option is not set to false
+case "$(snapctl get filemanager)" in
+    [Ff][Aa][Ll][Ss][Ee])
+      exit 0
+    ;;
+esac
+
+exec $SNAP/bin/node $SNAP/index.js

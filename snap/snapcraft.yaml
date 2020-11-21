@@ -13,6 +13,10 @@ description: |
   changed via "snap set picviewer-kiosk duration=30", the default
   is 10 seconds per image.
 
+  By default the snap runs a http file manager to manage
+  pictures with a web browser on port 8080.
+  This can be disabled via "snap set picviewer-kiosk filemanager=false"
+
   Imv has support for over 30 different image file formats including
     - Photoshop PSD files
     - Animated GIFS
@@ -51,7 +55,7 @@ apps:
       - opengl
       - wayland
   file-browser:
-    command: bin/node $SNAP/index.js
+    command: bin/filemanager.wrapper
     daemon: simple
     plugs:
       - network
@@ -132,3 +136,4 @@ parts:
     plugin: dump
     organize:
       imv.wrapper: bin/imv.wrapper
+      filemanager.wrapper: bin/filemanager.wrapper
